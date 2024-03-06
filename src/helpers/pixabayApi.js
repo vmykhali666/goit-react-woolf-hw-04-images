@@ -2,13 +2,9 @@ import config from 'configs/pixabayConfig.json';
 import axios from 'axios';
 
 export class PixabayApi {
-  #baseUrl;
+  static #baseUrl = config.PIXABAY_URL;
 
-  constructor() {
-    this.#baseUrl = config.PIXABAY_URL;
-  }
-
-  fetchImages = async (query, page) => {
+  static fetchImages = async (query, page) => {
     const { PIXABAY_KEY, ImagesSettings } = config;
     const { image_type, orientation, per_page } = ImagesSettings;
 
@@ -29,7 +25,7 @@ export class PixabayApi {
     });
   };
 
-  #createRequestURL(params) {
+  static #createRequestURL(params) {
     return this.#baseUrl + '?' + new URLSearchParams(params);
   }
 }

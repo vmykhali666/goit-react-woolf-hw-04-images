@@ -19,10 +19,26 @@ export const App = () => {
     alt: 'default alt text',
   });
 
-  const pixabayApi = new PixabayApi();
-
   useEffect(() => {
+    if (!query) {
+      return;
+    }
+
+    const fetchImages = async () => {
+      setIsLoading(true);
+      try {
+        const response = await PixabayApi.fetchImages(query, page);
+        setItems(prevItems => [...prevItems, ...response.hits]);
+        setHasMorePhotos(page < Math.ceil(response.totalHits / 12));
+      } catch (error) {
+        setError(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     fetchImages();
+    
   }, [query, page]);
 
   const handleClickOnLink = (href, alt) => {
@@ -34,35 +50,22 @@ export const App = () => {
     });
   };
 
-  const handleSubmit = (queryWord) => {
+  const handleSubmit = queryWord => {
     setQuery(queryWord);
     setPage(1);
     setItems([]);
   };
 
-  const handleSearchChange = (event) => {
+  const handleSearchChange = event => {
     console.log('Searchbar value changed');
   };
 
   const handleLoadMore = () => {
-    setPage((prevPage) => prevPage + 1);
+    setPage(prevPage => prevPage + 1);
   };
 
   const closeModal = () => {
     setModalIsOpen(false);
-  };
-
-  const fetchImages = async () => {
-    setIsLoading(true);
-    try {
-      const response = await pixabayApi.fetchImages(query, page);
-      setItems((prevItems) => [...prevItems, ...response.hits]);
-      setHasMorePhotos(page < Math.ceil(response.totalHits / 12));
-    } catch (error) {
-      setError(error);
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   return (
@@ -74,16 +77,11 @@ export const App = () => {
         paddingBottom: '24px',
       }}
     >
-      <Searchbar
-        onChange={handleSearchChange}
-        onSubmit={handleSubmit}
-      />
+      <Searchbar onChange={handleSearchChange} onSubmit={handleSubmit} />
       {items.length > 0 && (
         <>
           <ImageGallery items={items} onImageClick={handleClickOnLink} />
-          {hasMorePhotos && (
-            <Button onClick={handleLoadMore}>Load More</Button>
-          )}
+          {hasMorePhotos && <Button onClick={handleLoadMore}>Load More</Button>}
         </>
       )}
       {isLoading && <Loader />}
