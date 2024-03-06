@@ -9,7 +9,6 @@ import { Loader } from './Loader/Loader';
 export const App = () => {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -23,7 +22,7 @@ export const App = () => {
 
   useEffect(() => {
     if (query) {
-      fetchImages();
+      this.fetchImages();
     }
   }, [query, page]);
 
