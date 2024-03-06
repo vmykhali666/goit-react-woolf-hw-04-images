@@ -9,6 +9,7 @@ import { Loader } from './Loader/Loader';
 export const App = () => {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [, setError] = useState(null);
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -21,9 +22,7 @@ export const App = () => {
   const pixabayApi = new PixabayApi();
 
   useEffect(() => {
-    if (query) {
-      this.fetchImages();
-    }
+    fetchImages();
   }, [query, page]);
 
   const handleClickOnLink = (href, alt) => {
